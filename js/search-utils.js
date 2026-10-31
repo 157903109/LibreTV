@@ -23,11 +23,11 @@ function scoreRelevance(title, normalizedQuery) {
     return 0;
 }
 
-// 过滤 + 排序 + 跨源去重
+// 过滤 + 排序 + 去重
 // - 过滤：标题归一化后不含完整查询词的条目直接丢弃
 // - 排序：相关度降序 → 年份新→旧 → 标题
-// - 去重：按"归一化片名 + 年份"跨源合并为一条，保留首个作为代表，
-//     其余来源记入 alt_sources（供详情弹窗切换播放）；同源同 id 也去重
+// - 去重：仅去除"同源同 id"的翻页重复；不同采集站的结果各自保留为独立卡片
+//     (多源聚合的意义就是让用户能挑选不同源播放，不做跨源合并)
 function filterSortDedup(results, query) {
     if (!Array.isArray(results)) return [];
     const q = normalizeSearchText(query);
@@ -46,29 +46,13 @@ function filterSortDedup(results, query) {
         normalizeSearchText(a.item.vod_name).localeCompare(normalizeSearchText(b.item.vod_name))
     );
 
-    const merged = [];
-    const byKey = new Map();
+    const out = [];
     const seenSourceId = new Set();
     for (const { item } of scored) {
         const srcId = `${item.source_code || ''}_${item.vod_id || ''}`;
         if (seenSourceId.has(srcId)) continue;
         seenSourceId.add(srcId);
-
-        const key = normalizeSearchText(item.vod_name) + '|' + (parseInt(item.vod_year, 10) || '');
-        const existing = byKey.get(key);
-        if (existing) {
-            if (!existing.alt_sources) existing.alt_sources = [];
-            existing.alt_sources.push({
-                source_name: item.source_name,
-                source_code: item.source_code,
-                vod_id: item.vod_id,
-                api_url: item.api_url,
-            });
-            continue;
-        }
-        const rep = { ...item };
-        byKey.set(key, rep);
-        merged.push(rep);
+        out.push(item);
     }
-    return merged;
+    return out;
 }

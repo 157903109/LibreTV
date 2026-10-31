@@ -10,8 +10,6 @@ let currentEpisodes = [];
 let currentVideoTitle = '';
 // 全局变量用于倒序状态
 let episodesReversed = false;
-// 当前搜索结果（去重后），用于详情弹窗的“其他来源”切换
-let currentSearchResults = [];
 
 // 页面初始化
 document.addEventListener('DOMContentLoaded', function() {
@@ -808,10 +806,9 @@ async function search() {
             });
         }
 
-        // 相关性过滤 + 排序 + 跨源去重：丢弃标题不含完整查询词的噪音结果
-        // 按相关度排序，并把同一部片在不同采集站的记录合并为一条（保留备选来源）
+        // 相关性过滤 + 排序 + 去重：丢弃标题不含完整查询词的噪音结果
+        // 仅去除同源翻页重复，不处理跨源重复
         allResults = filterSortDedup(allResults, query);
-        currentSearchResults = allResults;
 
         // 用过滤后的真实数量刷新计数
         if (searchResultsCount) {
@@ -1048,22 +1045,6 @@ async function showDetails(id, vod_name, sourceCode) {
             
             currentEpisodes = data.episodes;
             currentEpisodeIndex = 0;
-            
-            // 跨源去重后，同一影片的其他采集站来源（来自 search-utils 的 alt_sources）
-            const curResult = currentSearchResults.find(x =>
-                String(x.vod_id) === String(id) && x.source_code === sourceCode);
-            const altSources = (curResult && curResult.alt_sources) || [];
-            const safeTitleAttr = (vod_name || '').toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
-            const otherSourcesHtml = altSources.length ? `
-            <div class="flex-wrap items-center gap-2 mb-3">
-                <span class="text-gray-400 text-sm">其他来源:</span>
-                ${altSources.map(a => {
-                    const aid = String(a.vod_id || '').replace(/[^\w-]/g, '');
-                    const aname = (a.source_name || a.source_code || '').toString().replace(/</g, '&lt;');
-                    return ` <button onclick="showDetails('${aid}', '${safeTitleAttr}', '${a.source_code}')"
-                        class="px-2 py-1 bg-[#222] hover:bg-[#333] border border-[#444] rounded text-xs transition-colors">${aname}</button>`;
-                }).join('')}
-            </div>` : '';
 
             modalContent.innerHTML = `
                 ${detailInfoHtml}
@@ -1082,7 +1063,6 @@ async function showDetails(id, vod_name, sourceCode) {
                         复制链接
                     </button>
                 </div>
-                ${otherSourcesHtml}
                 <div id="episodesGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
                     ${renderEpisodes(vod_name, sourceCode, id)}
                 </div>
