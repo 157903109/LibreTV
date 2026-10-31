@@ -1,5 +1,5 @@
 // 全局变量
-let selectedAPIs = JSON.parse(localStorage.getItem('selectedAPIs') || '["tyyszy","dyttzy", "bfzy", "ruyi"]'); // 默认选中资源
+let selectedAPIs = JSON.parse(localStorage.getItem('selectedAPIs') || '["bfzy","ffzy","zy360","iqiyi","jisu","mdzy","zuid","baidu","lziapi","ffzyapi","ffzytv","juliang","caiji"]'); // 默认选中资源
 let customAPIs = JSON.parse(localStorage.getItem('customAPIs') || '[]'); // 存储自定义API列表
 
 // 添加当前播放的集数索引
@@ -10,6 +10,8 @@ let currentEpisodes = [];
 let currentVideoTitle = '';
 // 全局变量用于倒序状态
 let episodesReversed = false;
+// 当前搜索结果（去重后），用于详情弹窗的“其他来源”切换
+let currentSearchResults = [];
 
 // 页面初始化
 document.addEventListener('DOMContentLoaded', function() {
@@ -28,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 设置默认API选择（如果是第一次加载）
     if (!localStorage.getItem('hasInitializedDefaults')) {
         // 默认选中资源
-        selectedAPIs = ["tyyszy","bfzy","dyttzy", "ruyi"];
+        selectedAPIs = ["bfzy","ffzy","zy360","iqiyi","jisu","mdzy","zuid","baidu","lziapi","ffzyapi","ffzytv","juliang","caiji"];
         localStorage.setItem('selectedAPIs', JSON.stringify(selectedAPIs));
         
         // 默认选中过滤开关
@@ -806,6 +808,28 @@ async function search() {
             });
         }
 
+        // 相关性过滤 + 排序 + 跨源去重：丢弃标题不含完整查询词的噪音结果
+        // 按相关度排序，并把同一部片在不同采集站的记录合并为一条（保留备选来源）
+        allResults = filterSortDedup(allResults, query);
+        currentSearchResults = allResults;
+
+        // 用过滤后的真实数量刷新计数
+        if (searchResultsCount) {
+            searchResultsCount.textContent = allResults.length;
+        }
+
+        // 过滤后可能一条不剩，按"无结果"处理
+        if (allResults.length === 0) {
+            resultsDiv.innerHTML = `
+                <div class="col-span-full text-center py-16">
+                    <h3 class="mt-2 text-lg font-medium text-gray-400">没有找到匹配的结果</h3>
+                    <p class="mt-1 text-sm text-gray-500">请尝试其他关键词或更换数据源</p>
+                </div>
+            `;
+            hideLoading();
+            return;
+        }
+
         // 添加XSS保护，使用textContent和属性转义
         const safeResults = allResults.map(item => {
             const safeId = item.vod_id ? item.vod_id.toString().replace(/[^\w-]/g, '') : '';
@@ -1025,6 +1049,22 @@ async function showDetails(id, vod_name, sourceCode) {
             currentEpisodes = data.episodes;
             currentEpisodeIndex = 0;
             
+            // 跨源去重后，同一影片的其他采集站来源（来自 search-utils 的 alt_sources）
+            const curResult = currentSearchResults.find(x =>
+                String(x.vod_id) === String(id) && x.source_code === sourceCode);
+            const altSources = (curResult && curResult.alt_sources) || [];
+            const safeTitleAttr = (vod_name || '').toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            const otherSourcesHtml = altSources.length ? `
+            <div class="flex-wrap items-center gap-2 mb-3">
+                <span class="text-gray-400 text-sm">其他来源:</span>
+                ${altSources.map(a => {
+                    const aid = String(a.vod_id || '').replace(/[^\w-]/g, '');
+                    const aname = (a.source_name || a.source_code || '').toString().replace(/</g, '&lt;');
+                    return ` <button onclick="showDetails('${aid}', '${safeTitleAttr}', '${a.source_code}')"
+                        class="px-2 py-1 bg-[#222] hover:bg-[#333] border border-[#444] rounded text-xs transition-colors">${aname}</button>`;
+                }).join('')}
+            </div>` : '';
+
             modalContent.innerHTML = `
                 ${detailInfoHtml}
                 <div class="flex flex-wrap items-center justify-between mb-4 gap-2">
@@ -1042,6 +1082,7 @@ async function showDetails(id, vod_name, sourceCode) {
                         复制链接
                     </button>
                 </div>
+                ${otherSourcesHtml}
                 <div id="episodesGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
                     ${renderEpisodes(vod_name, sourceCode, id)}
                 </div>

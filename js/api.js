@@ -2,7 +2,7 @@
 async function handleApiRequest(url) {
     const customApi = url.searchParams.get('customApi') || '';
     const customDetail = url.searchParams.get('customDetail') || '';
-    const source = url.searchParams.get('source') || 'heimuer';
+    const source = url.searchParams.get('source') || 'dyttzy';
     
     try {
         if (url.pathname === '/api/search') {
@@ -59,7 +59,7 @@ async function handleApiRequest(url) {
                 
                 return JSON.stringify({
                     code: 200,
-                    list: data.list || [],
+                    list: filterSortDedup(data.list, searchQuery),
                 });
             } catch (fetchError) {
                 clearTimeout(timeoutId);
@@ -70,7 +70,7 @@ async function handleApiRequest(url) {
         // 详情处理
         if (url.pathname === '/api/detail') {
             const id = url.searchParams.get('id');
-            const sourceCode = url.searchParams.get('source') || 'heimuer'; // 获取源代码
+            const sourceCode = url.searchParams.get('source') || 'dyttzy'; // 获取源代码
             
             if (!id) {
                 throw new Error('缺少视频ID参数');
@@ -407,27 +407,8 @@ async function handleAggregatedSearch(searchQuery) {
             });
         }
         
-        // 去重（根据vod_id和source_code组合）
-        const uniqueResults = [];
-        const seen = new Set();
-        
-        allResults.forEach(item => {
-            const key = `${item.source_code}_${item.vod_id}`;
-            if (!seen.has(key)) {
-                seen.add(key);
-                uniqueResults.push(item);
-            }
-        });
-        
-        // 按照视频名称和来源排序
-        uniqueResults.sort((a, b) => {
-            // 首先按照视频名称排序
-            const nameCompare = (a.vod_name || '').localeCompare(b.vod_name || '');
-            if (nameCompare !== 0) return nameCompare;
-            
-            // 如果名称相同，则按照来源排序
-            return (a.source_name || '').localeCompare(b.source_name || '');
-        });
+        // 相关性过滤 + 排序 + 跨源去重（丢弃标题不含查询词的模糊匹配噪音）
+        const uniqueResults = filterSortDedup(allResults, searchQuery);
         
         return JSON.stringify({
             code: 200,
@@ -517,17 +498,8 @@ async function handleMultipleCustomSearch(searchQuery, customApiUrls) {
             });
         }
         
-        // 去重（根据vod_id和api_url组合）
-        const uniqueResults = [];
-        const seen = new Set();
-        
-        allResults.forEach(item => {
-            const key = `${item.api_url || ''}_${item.vod_id}`;
-            if (!seen.has(key)) {
-                seen.add(key);
-                uniqueResults.push(item);
-            }
-        });
+        // 相关性过滤 + 排序 + 跨源去重（丢弃标题不含查询词的模糊匹配噪音）
+        const uniqueResults = filterSortDedup(allResults, searchQuery);
         
         return JSON.stringify({
             code: 200,

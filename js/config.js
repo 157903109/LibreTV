@@ -25,20 +25,11 @@ const SITE_CONFIG = {
     version: '1.0.3'
 };
 
-// API站点配置
-const API_SITES = {
-    dyttzy: {
-        api: 'http://caiji.dyttzyapi.com/api.php/provide/vod',
-        name: '电影天堂资源',
-        detail: 'http://caiji.dyttzyapi.com', 
-    },
+// 失效的API站点配置
+const DISABLED_API_SITES = {
     ruyi: {
         api: 'https://cj.rycjapi.com/api.php/provide/vod',
         name: '如意资源',
-    },
-    bfzy: {
-        api: 'https://bfzyapi.com/api.php/provide/vod',
-        name: '暴风资源',
     },
     tyyszy: {
         api: 'https://tyyszy.com/api.php/provide/vod',
@@ -48,23 +39,10 @@ const API_SITES = {
         api: 'https://zy.xiaomaomi.cc/api.php/provide/vod',
         name: '小猫咪资源',
     },
-    ffzy: {
-        api: 'http://ffzy5.tv/api.php/provide/vod',
-        name: '非凡影视',
-        detail: 'http://ffzy5.tv', 
-    },
     heimuer: {
         api: 'https://json.heimuer.xyz/api.php/provide/vod',
         name: '黑木耳',
         detail: 'https://heimuer.tv', 
-    },
-    zy360: {
-        api: 'https://360zy.com/api.php/provide/vod',
-        name: '360资源',
-    },
-    iqiyi: {
-        api: 'https://www.iqiyizyapi.com/api.php/provide/vod',
-        name: 'iqiyi资源',
     },
     wolong: {
         api: 'https://wolongzyw.com/api.php/provide/vod',
@@ -74,11 +52,6 @@ const API_SITES = {
         api: 'https://cjhwba.com/api.php/provide/vod',
         name: '华为吧资源',
     },
-    jisu: {
-        api: 'https://jszyapi.com/api.php/provide/vod',
-        name: '极速资源',
-        detail: 'https://jszyapi.com', 
-    },
     dbzy: {
         api: 'https://dbzy.com/api.php/provide/vod',
         name: '豆瓣资源',
@@ -87,21 +60,9 @@ const API_SITES = {
         api: 'https://mozhuazy.com/api.php/provide/vod',
         name: '魔爪资源',
     },
-    mdzy: {
-        api: 'https://www.mdzyapi.com/api.php/provide/vod',
-        name: '魔都资源',
-    },
-    zuid: {
-        api: 'https://api.zuidapi.com/api.php/provide/vod',
-        name: '最大资源'
-    },
     yinghua: {
         api: 'https://m3u8.apiyhzy.com/api.php/provide/vod',
         name: '樱花资源'
-    },
-    baidu: {
-        api: 'https://api.apibdzy.com/api.php/provide/vod',
-        name: '百度云资源'
     },
     wujin: {
         api: 'https://api.wujinapi.me/api.php/provide/vod',
@@ -115,11 +76,125 @@ const API_SITES = {
         api: 'https://ikunzyapi.com/api.php/provide/vod',
         name: 'iKun资源'
     },
-    testSource: {
-        api: 'https://www.example.com/api.php/provide/vod',
-        name: '空内容测试源',
-        adult: true
+    haiwaikan: {
+        api: 'https://haiwaikan.com/api.php/provide/vod',
+        name: '海外看 采集',
     },
+    suoniapi: {
+        api: 'https://suoniapi.com/api.php/provide/vod',
+        name: '索尼 采集',
+    },
+    kuaifan: {
+        api: 'https://api.kuaifan.tv/api.php/provide/vod',
+        name: '快帆 采集',
+    },
+    leshiapi: {
+        api: 'https://leshiapi.com/api.php/provide/vod',
+        name: '乐视',
+    },
+    tyyszy: {
+        api: 'http://tyyszy.com/api.php/provide/vod',
+        name: '影视 • 天涯',
+    },
+    ffzy: {
+        api: 'http://ffzy.tv/api.php/provide/vod',
+        name: '影视 • 非凡[直连]',
+    },
+    wolongzyw: {
+        api: 'https://wolongzyw.com/api.php/provide/vod',
+        name: '影视 • 卧龙资源[直连]',
+    },
+    ukuapi: {
+        api: 'https://api.ukuapi.com/api.php/provide/vod',
+        name: '影视 • 尤酷[直连]',
+    },
+    vs: {
+        api: 'https://vs.okcdn100.top/api.php/provide/vod',
+        name: '影视 • 小绵阳',
+    },
+
+
+    // 以下是重复的
+    bfzyapi: {
+        api: 'https://bfzyapi.com/api.php/provide/vod',
+        name: '暴風 采集',
+    },
+    jszyapi: {
+        api: 'https://jszyapi.com/api.php/provide/vod',
+        name: '影视 • 极速[直连]',
+    },
+    apibdzy: {
+        api: 'https://api.apibdzy.com/api.php/provide/vod',
+        name: '百度 采集',
+    },
+}
+
+// API站点配置
+const API_SITES = {
+    dyttzy: {
+        api: 'http://caiji.dyttzyapi.com/api.php/provide/vod',
+        name: '电影天堂资源',
+        detail: 'http://caiji.dyttzyapi.com', 
+    },
+    bfzy: {
+        api: 'https://bfzyapi.com/api.php/provide/vod',
+        name: '暴风资源',
+    },
+    ffzy: {
+        api: 'http://ffzy5.tv/api.php/provide/vod',
+        name: '非凡影视',
+        detail: 'http://ffzy5.tv', 
+    },
+    zy360: {
+        api: 'https://360zy.com/api.php/provide/vod',
+        name: '360资源',
+    },
+    iqiyi: {
+        api: 'https://www.iqiyizyapi.com/api.php/provide/vod',
+        name: 'iqiyi资源',
+    },
+    jisu: {
+        api: 'https://jszyapi.com/api.php/provide/vod',
+        name: '极速资源',
+        detail: 'https://jszyapi.com', 
+    },
+    mdzy: {
+        api: 'https://www.mdzyapi.com/api.php/provide/vod',
+        name: '魔都资源',
+    },
+    zuid: {
+        api: 'https://api.zuidapi.com/api.php/provide/vod',
+        name: '最大资源'
+    },
+    baidu: {
+        api: 'https://api.apibdzy.com/api.php/provide/vod',
+        name: '百度云资源'
+    },
+
+    // 从 https://github.com/qist/tvbox 同步的 CMS 源
+    // ------------- 开始 -------------
+    // "lziapi","ffzyapi","ffzytv","juliang","caiji"
+    lziapi: {
+        api: 'https://cj.lziapi.com/api.php/provide/vod',
+        name: '量子',
+    },
+    ffzyapi: {
+        api: 'http://cj.ffzyapi.com/api.php/provide/vod',
+        name: '非凡',
+    },
+    ffzytv: {
+        api: 'https://ffzy.tv/api.php/provide/vod',
+        name: '非凡2',
+    },
+    juliang: {
+        api: 'https://api.juliang.live/api/provide/vod',
+        name: '巨量 • 影视',
+    },
+    caiji: {
+        api: 'http://caiji.dyttzyapi.com/api.php/provide/vod',
+        name: '影视 • 电影天堂',
+    },
+    // ------------- 结束 -------------
     // 下面是一些成人内容的API源，默认隐藏，使用本项目浏览黄色内容违背项目初衷
     // 互联网上传播的色情内容将人彻底客体化、工具化，是性别解放和人类平等道路上的巨大障碍。
     // 这些黄色影片是资本主义父权制压迫的最恶毒体现，它将暴力和屈辱商品化，践踏人的尊严，对受害者造成无法弥愈的伤害，并毒害社会关系。
@@ -200,7 +275,7 @@ const API_CONFIG = {
         // 只拼接参数部分，不再包含 /api.php/provide/vod/
         path: '?ac=videolist&wd=',
         pagePath: '?ac=videolist&wd={query}&pg={page}',
-        maxPages: 50, // 最大获取页数
+        maxPages: 3, // 最大获取页数
         headers: {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
             'Accept': 'application/json'

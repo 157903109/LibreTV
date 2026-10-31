@@ -4,29 +4,56 @@
 // 是因为 config.js 用的是浏览器全局 const（没有 export），Node 端无法直接 import。
 // 增删源只改这里即可，/tvbox/config 会自动生成对应的 TVBox 配置。
 
-// 21 个常规采集站（均为苹果CMS协议：/api.php/provide/vod）
-export const TVBOX_SITES = [
+// 失效的API站点配置
+const DISABLED_API_SITES = [
   { key: 'dyttzy',    name: '电影天堂资源', api: 'http://caiji.dyttzyapi.com/api.php/provide/vod' },
   { key: 'ruyi',      name: '如意资源',     api: 'https://cj.rycjapi.com/api.php/provide/vod' },
-  { key: 'bfzy',      name: '暴风资源',     api: 'https://bfzyapi.com/api.php/provide/vod' },
   { key: 'tyyszy',    name: '天涯资源',     api: 'https://tyyszy.com/api.php/provide/vod' },
   { key: 'xiaomaomi', name: '小猫咪资源',   api: 'https://zy.xiaomaomi.cc/api.php/provide/vod' },
-  { key: 'ffzy',      name: '非凡影视',     api: 'http://ffzy5.tv/api.php/provide/vod' },
   { key: 'heimuer',   name: '黑木耳',       api: 'https://json.heimuer.xyz/api.php/provide/vod' },
-  { key: 'zy360',     name: '360资源',      api: 'https://360zy.com/api.php/provide/vod' },
-  { key: 'iqiyi',     name: '爱奇艺资源',   api: 'https://www.iqiyizyapi.com/api.php/provide/vod' },
   { key: 'wolong',    name: '卧龙资源',     api: 'https://wolongzyw.com/api.php/provide/vod' },
   { key: 'hwba',      name: '华为吧资源',   api: 'https://cjhwba.com/api.php/provide/vod' },
-  { key: 'jisu',      name: '极速资源',     api: 'https://jszyapi.com/api.php/provide/vod' },
   { key: 'dbzy',      name: '豆瓣资源',     api: 'https://dbzy.com/api.php/provide/vod' },
   { key: 'mozhua',    name: '魔爪资源',     api: 'https://mozhuazy.com/api.php/provide/vod' },
-  { key: 'mdzy',      name: '魔都资源',     api: 'https://www.mdzyapi.com/api.php/provide/vod' },
-  { key: 'zuid',      name: '最大资源',     api: 'https://api.zuidapi.com/api.php/provide/vod' },
   { key: 'yinghua',   name: '樱花资源',     api: 'https://m3u8.apiyhzy.com/api.php/provide/vod' },
-  { key: 'baidu',     name: '百度云资源',   api: 'https://api.apibdzy.com/api.php/provide/vod' },
   { key: 'wujin',     name: '无尽资源',     api: 'https://api.wujinapi.me/api.php/provide/vod' },
   { key: 'wwzy',      name: '旺旺短剧',     api: 'https://wwzy.tv/api.php/provide/vod' },
   { key: 'ikun',      name: 'iKun资源',     api: 'https://ikunzyapi.com/api.php/provide/vod' },
+  { key: 'haiwaikan', name: '海外看 采集', api: 'https://haiwaikan.com/api.php/provide/vod' },
+  { key: 'suoniapi', name: '索尼 采集', api: 'https://suoniapi.com/api.php/provide/vod' },
+  { key: 'kuaifan', name: '快帆 采集', api: 'https://api.kuaifan.tv/api.php/provide/vod' },
+  { key: 'leshiapi', name: '乐视', api: 'https://leshiapi.com/api.php/provide/vod' },
+  { key: 'tyyszy', name: '影视 • 天涯', api: 'http://tyyszy.com/api.php/provide/vod' },
+  { key: 'ffzy', name: '影视 • 非凡[直连]', api: 'http://ffzy.tv/api.php/provide/vod' },
+  { key: 'wolongzyw', name: '影视 • 卧龙资源[直连]', api: 'https://wolongzyw.com/api.php/provide/vod' },
+  { key: 'ukuapi', name: '影视 • 尤酷[直连]', api: 'https://api.ukuapi.com/api.php/provide/vod' },
+  { key: 'vs', name: '影视 • 小绵阳', api: 'https://vs.okcdn100.top/api.php/provide/vod' },
+
+  // 以下是重复的
+  { key: 'bfzyapi', name: '暴風 采集', api: 'https://bfzyapi.com/api.php/provide/vod' },
+  { key: 'jszyapi', name: '影视 • 极速[直连]', api: 'https://jszyapi.com/api.php/provide/vod' },
+  { key: 'apibdzy', name: '百度 采集', api: 'https://api.apibdzy.com/api.php/provide/vod' },
+];
+
+// 21 个常规采集站（均为苹果CMS协议：/api.php/provide/vod）
+// ["bfzy","ffzy","zy360","iqiyi","jisu","mdzy","zuid","baidu","lziapi","ffzyapi","ffzytv","juliang","caiji"]
+export const TVBOX_SITES = [
+  { key: 'bfzy',      name: '暴风资源',     api: 'https://bfzyapi.com/api.php/provide/vod' },
+  { key: 'ffzy',      name: '非凡影视',     api: 'http://ffzy5.tv/api.php/provide/vod' },
+  { key: 'zy360',     name: '360资源',      api: 'https://360zy.com/api.php/provide/vod' },
+  { key: 'iqiyi',     name: '爱奇艺资源',   api: 'https://www.iqiyizyapi.com/api.php/provide/vod' },
+  { key: 'jisu',      name: '极速资源',     api: 'https://jszyapi.com/api.php/provide/vod' },
+  { key: 'mdzy',      name: '魔都资源',     api: 'https://www.mdzyapi.com/api.php/provide/vod' },
+  { key: 'zuid',      name: '最大资源',     api: 'https://api.zuidapi.com/api.php/provide/vod' },
+  { key: 'baidu',     name: '百度云资源',   api: 'https://api.apibdzy.com/api.php/provide/vod' },
+  // 从 https://github.com/qist/tvbox 同步的 CMS 源
+  // ------------- 开始 -------------
+  { key: 'lziapi', name: '量子', api: 'https://cj.lziapi.com/api.php/provide/vod' },
+  { key: 'ffzyapi', name: '非凡', api: 'http://cj.ffzyapi.com/api.php/provide/vod' },
+  { key: 'ffzytv', name: '非凡2', api: 'https://ffzy.tv/api.php/provide/vod' },
+  { key: 'juliang', name: '巨量 • 影视', api: 'https://api.juliang.live/api/provide/vod' },
+  { key: 'caiji', name: '影视 • 电影天堂', api: 'http://caiji.dyttzyapi.com/api.php/provide/vod' },
+  // ------------- 结束 -------------
 ];
 
 // TVBox 播放器内核（ijk）常用默认参数，软/硬解码各一组
