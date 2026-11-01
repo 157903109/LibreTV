@@ -127,6 +127,10 @@ const DISABLED_API_SITES = {
         api: 'https://api.apibdzy.com/api.php/provide/vod',
         name: '百度 采集',
     },
+    caiji: {
+        api: 'http://caiji.dyttzyapi.com/api.php/provide/vod',
+        name: '影视 • 电影天堂',
+    },
 }
 
 // API站点配置
@@ -173,7 +177,7 @@ const API_SITES = {
 
     // 从 https://github.com/qist/tvbox 同步的 CMS 源
     // ------------- 开始 -------------
-    // "lziapi","ffzyapi","ffzytv","juliang","caiji"
+    // "lziapi","ffzyapi","ffzytv","juliang"
     lziapi: {
         api: 'https://cj.lziapi.com/api.php/provide/vod',
         name: '量子',
@@ -189,10 +193,6 @@ const API_SITES = {
     juliang: {
         api: 'https://api.juliang.live/api/provide/vod',
         name: '巨量 • 影视',
-    },
-    caiji: {
-        api: 'http://caiji.dyttzyapi.com/api.php/provide/vod',
-        name: '影视 • 电影天堂',
     },
     // ------------- 结束 -------------
     // 下面是一些成人内容的API源，默认隐藏，使用本项目浏览黄色内容违背项目初衷

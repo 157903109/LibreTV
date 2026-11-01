@@ -6,7 +6,6 @@
 
 // 失效的API站点配置
 const DISABLED_API_SITES = [
-  { key: 'dyttzy',    name: '电影天堂资源', api: 'http://caiji.dyttzyapi.com/api.php/provide/vod' },
   { key: 'ruyi',      name: '如意资源',     api: 'https://cj.rycjapi.com/api.php/provide/vod' },
   { key: 'tyyszy',    name: '天涯资源',     api: 'https://tyyszy.com/api.php/provide/vod' },
   { key: 'xiaomaomi', name: '小猫咪资源',   api: 'https://zy.xiaomaomi.cc/api.php/provide/vod' },
@@ -33,11 +32,13 @@ const DISABLED_API_SITES = [
   { key: 'bfzyapi', name: '暴風 采集', api: 'https://bfzyapi.com/api.php/provide/vod' },
   { key: 'jszyapi', name: '影视 • 极速[直连]', api: 'https://jszyapi.com/api.php/provide/vod' },
   { key: 'apibdzy', name: '百度 采集', api: 'https://api.apibdzy.com/api.php/provide/vod' },
+  { key: 'caiji', name: '影视 • 电影天堂', api: 'http://caiji.dyttzyapi.com/api.php/provide/vod' },
 ];
 
 // 21 个常规采集站（均为苹果CMS协议：/api.php/provide/vod）
-// ["bfzy","ffzy","zy360","iqiyi","jisu","mdzy","zuid","baidu","lziapi","ffzyapi","ffzytv","juliang","caiji"]
+// ["dyttzy","bfzy","ffzy","zy360","iqiyi","jisu","mdzy","zuid","baidu","lziapi","ffzyapi","ffzytv","juliang"]
 export const TVBOX_SITES = [
+  { key: 'dyttzy',    name: '电影天堂资源', api: 'http://caiji.dyttzyapi.com/api.php/provide/vod' },
   { key: 'bfzy',      name: '暴风资源',     api: 'https://bfzyapi.com/api.php/provide/vod' },
   { key: 'ffzy',      name: '非凡影视',     api: 'http://ffzy5.tv/api.php/provide/vod' },
   { key: 'zy360',     name: '360资源',      api: 'https://360zy.com/api.php/provide/vod' },
@@ -52,9 +53,8 @@ export const TVBOX_SITES = [
   { key: 'ffzyapi', name: '非凡', api: 'http://cj.ffzyapi.com/api.php/provide/vod' },
   { key: 'ffzytv', name: '非凡2', api: 'https://ffzy.tv/api.php/provide/vod' },
   { key: 'juliang', name: '巨量 • 影视', api: 'https://api.juliang.live/api/provide/vod' },
-  { key: 'caiji', name: '影视 • 电影天堂', api: 'http://caiji.dyttzyapi.com/api.php/provide/vod' },
   // ------------- 结束 -------------
-];
+].concat(DISABLED_API_SITES);
 
 // TVBox 播放器内核（ijk）常用默认参数，软/硬解码各一组
 const IJK_DEFAULT = [
