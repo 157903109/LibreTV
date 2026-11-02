@@ -1,8 +1,8 @@
 version: '3'
 services:
-  libretv:
-    image: bestzwei/libretv:latest
-    container_name: libretv
+  振华影视:
+    image: bestzwei/振华影视:latest
+    container_name: 振华影视
     ports:
       - "8899:80"
     environment:
